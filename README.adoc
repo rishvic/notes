@@ -3,16 +3,24 @@
 :toclevels: 3
 :icons: font
 
-This repository is a personal notes system. It is designed to be fast to reference,
-pleasant to author in AsciiDoc, and easy for an AI agent to navigate and maintain.
+A personal notes system built on one load-bearing idea: every note has a single
+*intent* — *Reference* (look it up on demand), *Internalise* (get it into your
+head), or *Track* (work a backlog) — and that intent decides how you write the note,
+where it lives, and how you revisit it.
 
-Three documents work together:
+The method is *evidence-tiered, not productivity folklore*: the strong memory
+science is applied only where it actually holds (Internalise); the weaker,
+practitioner-level choices are labelled as such. It is fast to reference, pleasant
+to author in AsciiDoc, and built so an AI agent can maintain the corpus.
+
+Four documents work together:
 
 [cols="1,3"]
 |===
 | `CONTEXT.md` | The *glossary* — what each term means. Vocabulary only.
 | `docs/adr/` | The *decision records* — _why_ the load-bearing choices were made.
-| `README.adoc` (this file) | The *operating manual* — _how_ to write and revisit notes.
+| `README.adoc` (this file) | The *operating manual* — _how you_ write and revisit notes.
+| `AGENTS.md` | The *agent contract* — _how the agent_ maintains the corpus.
 |===
 
 toc::[]
@@ -49,6 +57,7 @@ error. See `docs/adr/0002-type-notes-by-intent.md`.
 notes/
 ├── CONTEXT.md              glossary
 ├── README.adoc             this manual
+├── AGENTS.md               agent contract
 ├── docs/adr/               decision records
 ├── inbox/                  Capture: raw jottings, zero ceremony
 ├── reference/              look-it-up notes
@@ -81,7 +90,8 @@ prompt — happens later, deliberately, not mid-thought.
 *How* you process is deliberately yours to shape — there is no validated intake
 procedure to enforce (the evidence governs the _note you produce_, not the path
 you take to it). The framework's only hard requirements are the per-intent
-templates and the corpus invariants the agent's _Validate_ operation checks.
+templates and the corpus invariants the agent checks — the _Validate_ operation
+in `AGENTS.md`.
 
 == Writing notes
 
@@ -195,8 +205,9 @@ An actionable backlog. Items live under *status* sub-headings.
 
 == Metadata
 
-Two tiers, split by churn and audience: *stable + human-meaningful* in the file;
-*volatile + machine-only* in a sidecar.
+Two tiers, split by churn and audience: *stable, human-meaningful* attributes live
+in the file (below); *volatile, machine-only* state lives in a sidecar the agent
+manages (`internalise/.srs/`) — specified in `AGENTS.md`.
 
 === In-file attributes
 
@@ -211,41 +222,6 @@ Two tiers, split by churn and audience: *stable + human-meaningful* in the file;
 | `:review_by:` | optional | reference | decay horizon; sweep surfaces it when due
 |===
 
-=== The `.srs/` sidecar (Internalise)
-
-Machine-managed; never edited by hand.
-
-`internalise/.srs/log.jsonl` — append-only, one JSON object per review:
-
-[source,json]
-----
-{"item": "english#need-action", "date": "2026-05-30", "grade": "good"}
-----
-
-`grade` is one of the lowercase constants `again | hard | good | easy` — stored
-lowercase so the log stays clean to parse and replay (the capitalised forms in the
-tables below are display labels for the same constants).
-
-`internalise/.srs/state.json` — derived (recomputable from the log *plus the set
-of item ids declared in the `.adoc` files*), one entry per item:
-
-[source,json]
-----
-{"english#need-action": {"level": 2, "next_due": "2026-06-02", "reps": 3}}
-----
-
-The log is the durable asset; state and schedule are a function of it (see
-`docs/adr/0004-internalise-graded-log-leitner.md`).
-
-[#srs-new-item]
-*New items.* A freshly created item has no log entries yet still needs a state
-entry (see _Validate_). It enters at *level 1, `reps` 0*, with `next_due` =
-creation date + the level-1 interval (1 day) — and is *not* written to
-`log.jsonl` until its first graded review. This is the same uniform rule used
-everywhere: `next_due` = anchor + interval[`level`], where the anchor is the
-creation date for a new item and the last review date thereafter. `reps` 0 is
-what marks an item as never-reviewed.
-
 == Linking
 
 * Use native `xref:` / `<<anchor>>` with *descriptive link text* (the label is a
@@ -258,58 +234,29 @@ A subject's notes may link *across* intents — e.g. an Internalise English note
 `xref:` a Reference grammar note.
 
 [#internalise-revision]
-== Internalise revision: the Leitner schedule
+== Internalise revision: practice
 
-Attempt to produce the response, reveal, then self-grade. The agent records the
-grade in the log and reschedules.
+Attempt to produce the response, reveal, then self-grade your attempt. These four
+*grades* are the fixed interface between practice and scheduling:
 
-.Interval ladder (the gap before an item is next due)
-[cols="2,1,1,1,1,1,1",options="header"]
+[cols="1,3",options="header"]
 |===
-| Level | 1 | 2 | 3 | 4 | 5 | 6
-| Interval | 1 day | 3 days | 1 week | 3 weeks | 2 months | 6 months
-|===
-
-.Grade → level move
-[cols="1,2,2",options="header"]
-|===
-| Grade | Meaning | Move
-| *Again* | couldn't produce it | reset to level 1 (due tomorrow)
-| *Hard* | produced, but laboured | stay at current level
-| *Good* | clean production | +1 level (interval expands)
-| *Easy* | instant | +2 levels
+| Grade | What it means
+| *Again* | couldn't produce it
+| *Hard* | produced it, but laboured
+| *Good* | clean production
+| *Easy* | instant
 |===
 
-A "miss" only craters to level 1 when you genuinely could not produce it; *Hard* is
-the escape valve for "almost". If an item fails ~4+ times, the agent flags it to be
-*rewritten*, not re-drilled — chronic failure usually means a bad prompt.
+Grade honestly: reset to *Again* only when you genuinely could not produce it;
+*Hard* is the escape valve for "almost". The agent records the grade in the log and
+reschedules the item with the active *scheduler* — Leitner by default. Clean recall
+pushes the next review further out (days → weeks → months); a real miss brings it
+back soon. If an item keeps failing, the agent flags it to be *rewritten*, not
+re-drilled — chronic failure usually means a bad prompt.
 
-== Agent operations
-
-The contract an agent follows when maintaining this repo.
-
-Practice (Internalise)::
-Read `internalise/.srs/state.json`; for each item with `next_due <= today`, show its
-prompt, take the produced answer, compare to the response, ask for / infer a grade,
-append to `log.jsonl`, and update `state.json` per the ladder above.
-
-Hygiene sweep (Reference)::
-Check for dead links, near-duplicate notes, and contradictions; list notes whose
-`:review_by:` is past or whose `:updated:` is old; report — do not auto-edit.
-
-Triage (Track)::
-Present each Track note's items grouped by status; ask what changed; move, promote,
-demote, and prune on instruction.
-
-Backlinks::
-On request, find references to a note by searching the corpus for its filename and
-anchors. Do not store them.
-
-Validate::
-Check that each note's `:intent:` matches its folder, that Reference notes have a
-`:source:`, that `xref:` targets resolve, and that every Internalise item id in a
-`.adoc` has a `state.json` entry (and vice-versa) — a newly created item being
-registered per the <<srs-new-item,new-item rule>>.
+The schedule itself — the intervals, and how each grade moves an item — is the
+scheduler's job: see the interface and the Leitner default in `AGENTS.md`.
 
 == Evidence basis
 
@@ -332,24 +279,14 @@ learning happens in Internalise notes, through retrieval practice.
 
 == License
 
-This repository is https://reuse.software/[REUSE]-compliant. Per-file copyright
-and licensing is declared in `REUSE.toml`, with the full license texts in
-`LICENSES/`. Run `reuse lint` to verify. It is licensed in two parts (see
-`docs/adr/0005-split-license-apache-and-cc0.md` for the reasoning).
-
-[cols="1,1,2",options="header"]
-|===
-| Scope | License | What it covers
-| *The framework* | link:LICENSES/Apache-2.0.txt[Apache-2.0]
-| The methodology and everything that teaches it: `README.adoc`, `CONTEXT.md`,
-  `docs/adr/`, `docs/origin-brief.md`, `NOTICE`, and the conventions, templates,
-  and metadata schema described above.
-| *The example notes* | link:LICENSES/CC0-1.0.txt[CC0 1.0]
-| The sample note content shipped to illustrate the method: everything under
-  `reference/`, `internalise/`, and `track/` (including the `.srs/` log and
-  state). Dedicated to the public domain — copy a sample as a seed with no
-  obligation.
-|===
+https://reuse.software/[REUSE]-compliant and dual-licensed. The *framework* — the
+methodology and everything that teaches it (`README.adoc`, `AGENTS.md`,
+`CONTEXT.md`, `docs/`) — is link:LICENSES/Apache-2.0.txt[Apache-2.0]. The *example
+notes* (`reference/`, `internalise/`, `track/`, including the `.srs/` data) are
+link:LICENSES/CC0-1.0.txt[CC0 1.0], dedicated to the public domain so you can copy
+one as a seed with no obligation. Per-file terms are declared in `REUSE.toml` (run
+`reuse lint` to verify); the reasoning is in
+`docs/adr/0005-split-license-apache-and-cc0.md`.
 
 The example notes are *illustrative samples of the method, not maintained content
 to adopt verbatim* — fork the framework and write your own.

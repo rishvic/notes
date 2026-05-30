@@ -8,6 +8,11 @@ Scheduling today uses a simple Leitner ladder (1d → 3d → 1w → 3w → 2m �
 `again` resets to level 1. The log and derived state live in a machine-only
 `internalise/.srs/` sidecar; per-item `[[anchors]]` bind log entries to prompts.
 
+The **scheduler is a pluggable component**, not a fixed feature. The four-grade
+vocabulary is the _fixed interface_ — what practice produces and what any
+scheduler consumes — while the algorithm above it (Leitner being the default) is
+swappable. The interface and the Leitner default are specified in `AGENTS.md`.
+
 ## Why
 
 The review log is the only hard-to-reverse asset: you cannot reconstruct grades
@@ -27,3 +32,8 @@ replay the log through it with zero loss.
   need hundreds of reviews to behave (SM-2's "ease hell" at small scale), and
   reimplementing them by hand duplicates a library far better run _on the log_
   later. Overkill for a handful of items.
+- **A pluggable grade vocabulary** — letting each scheduler define its own grade
+  set would destroy the log as a stable interlingua and foreclose the lossless
+  replay that makes the scheduler swappable at all. The four grades are
+  deliberately the fixed seam: FSRS consumes them natively, SM-2 and binary map
+  cleanly onto them.

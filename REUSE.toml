@@ -8,6 +8,7 @@ version = 1
 path = [
   "CONTEXT.md",
   "README.adoc",
+  "AGENTS.md",
   "docs/adr/*.md",
   "docs/origin-brief.md",
   "NOTICE",

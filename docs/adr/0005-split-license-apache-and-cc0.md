@@ -1,19 +1,20 @@
 # Split license: Apache-2.0 for the framework, CC0 for the example notes
 
 The framework — the methodology and everything that teaches it (`README.adoc`,
-`CONTEXT.md`, `docs/adr/`, `docs/origin-brief.md`) — is **Apache-2.0**. The
-example notes shipped to illustrate it (`reference/`, `internalise/`, `track/`,
-including the `.srs/` data) are **CC0 1.0**. The split is declared per-path in
-`REUSE.toml`.
+`AGENTS.md`, `CONTEXT.md`, `docs/adr/`, `docs/origin-brief.md`) — is
+**Apache-2.0**. The example notes shipped to illustrate it (`reference/`,
+`internalise/`, `track/`, including the `.srs/` data) are **CC0 1.0**. The split
+is declared per-path in `REUSE.toml`.
 
 ## Why
 
 Two kinds of artifact in one tree, wanting different terms.
 
-The framework is effectively a reusable _agent skill_ — its README carries an
-explicit agent contract — and that ecosystem licenses permissively: Anthropic's
-own `anthropics/skills` repo is Apache-2.0, and prompt/skill libraries default
-to MIT/Apache. Apache signals "adopt and adapt freely, keep the notice."
+The framework is effectively a reusable _agent skill_ — it carries an explicit
+agent contract (`AGENTS.md`) — and that ecosystem licenses permissively:
+Anthropic's own `anthropics/skills` repo is Apache-2.0, and prompt/skill
+libraries default to MIT/Apache. Apache signals "adopt and adapt freely, keep
+the notice."
 
 The example notes are seeds meant to be copied, so any attribution obligation is
 friction. CC0 puts them in the public domain — the same split `prompts.chat`

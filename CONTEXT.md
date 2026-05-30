@@ -71,6 +71,14 @@ the _response_ is the exact form you want to produce unaided. The response stays
 hidden until you have attempted it.
 _Avoid_: "front/back" (Anki term), "flashcard".
 
+**Grade**:
+Your own assessment of a single retrieval attempt on an Internalise item, on a
+fixed four-value scale: _again_ (couldn't produce), _hard_ (laboured), _good_
+(clean), _easy_ (instant). You record a grade after each attempt; it is the
+stable vocabulary all revisit-scheduling builds on, whatever method does the
+spacing.
+_Avoid_: "score", "rating", "button" (Anki term).
+
 ## Flagged ambiguities
 
 **Revision** — used in two incompatible senses, with two different evidence
