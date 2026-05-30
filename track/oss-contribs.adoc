@@ -1,0 +1,41 @@
+= Open-source contribution ideas
+:intent: track
+:created: 2026-05-30
+:updated: 2026-05-30
+:tags: open-source, contributions, web
+
+Backlog of OSS contribution ideas, grouped by status. Triage periodically: promote,
+demote, prune (see the operating manual, `README.adoc`).
+
+// Migration note: statuses below are a best guess — the original flat list did not
+// record them. Move items between sections to match reality.
+
+== Active
+
+* *Vite SRI plugin* — a Vite plugin that adds Subresource Integrity (SRI) hashes to
+  `<script>` and `<link>` (stylesheet) tags.
++
+Repo: https://github.com/smoothtml/vite-plugin-sri[smoothtml/vite-plugin-sri]
+
+== Exploring
+
+* *Developer-friendly web-app framework* — author a framework on top of Chrome's
+  https://developer.chrome.com/blog/declarative-partial-updates[declarative partial updates]
+  to make web-app development more developer-friendly.
+
+* *AsciiDoc file formatter* — a formatter for AsciiDoc source.
++
+Open questions:
+
+** Ship as an editor plugin, a standalone tool, or both?
+** Use Tree-sitter for parsing?
++
+Related: the "learn AsciiDoctor" goal in `track/learn-asciidoctor.adoc`.
+
+== Tabled
+
+_(none yet)_
+
+== Done
+
+_(none yet)_

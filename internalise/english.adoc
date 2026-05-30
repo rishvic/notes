@@ -1,0 +1,19 @@
+= English: phrasing I want to produce unaided
+:intent: internalise
+:created: 2026-05-30
+:updated: 2026-05-30
+:tags: english, phrasing, concision
+
+Production self-tests for English phrasing. Attempt the response aloud before
+revealing it — the value is in producing it yourself, not recognising it.
+
+[#need-action%collapsible]
+.You're replying to PR review comments. You've made changes for some findings and justified deferring others, and you want to say what you'll do with the rest. Say it cleanly.
+====
+"…to understand the findings and *decide which to act on*."
+
+Why this beats "…figure out what decisions need action": that phrase stacks two
+buried verbs — *decide* (hidden in "decisions") and *act* (hidden in "action") —
+so it reads flat and blurs who does what. The move: recover the verbs and name
+who acts. See xref:../reference/english-writing-pitfalls.adoc#buried-verbs[buried verbs (zombie nouns)].
+====

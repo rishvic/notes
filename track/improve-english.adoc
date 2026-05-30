@@ -1,0 +1,32 @@
+= Improve my English
+:intent: track
+:created: 2026-05-30
+:updated: 2026-05-30
+:tags: english, learning
+
+Goal: improve my English deliberately. Tracked as a Track note because it is an
+actionable intention; as concrete weak spots surface they *spawn* Internalise
+notes (drilling a fix into production) and Reference notes (cheatsheets). Triage
+periodically: promote, demote, prune (see `README.adoc`).
+
+== Active
+
+* Tighten phrasing — cut buried verbs / zombie nouns.
++
+Spawned xref:../internalise/english.adoc#need-action[an Internalise item] (the
+"decide which to act on" fix) and
+xref:../reference/english-writing-pitfalls.adoc[the writing-pitfalls cheatsheet].
+
+== Exploring
+
+* Spot other recurring weak areas from real writing and speech (PR comments,
+  messages, conversations) — add them here as they show up, rather than guessing
+  a generic syllabus.
+
+== Tabled
+
+_(none yet)_
+
+== Done
+
+_(none yet)_

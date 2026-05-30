@@ -1,0 +1,32 @@
+= Learn AsciiDoctor deeply
+:intent: track
+:created: 2026-05-30
+:updated: 2026-05-30
+:tags: asciidoctor, learning
+
+Goal: become fluent in AsciiDoctor — enough to author these notes comfortably and
+to build the AsciiDoc tooling on the ideas backlog. Tracked as a Track note because
+it is an actionable intention; as it progresses it will *spawn* Internalise notes
+(drilling syntax) and Reference notes (cheatsheets).
+
+== Active
+
+* Work through the AsciiDoc Language documentation
+  (https://docs.asciidoctor.org/asciidoc/latest/[docs.asciidoctor.org]).
+* Get fluent with the features these notes depend on: document attributes,
+  `include::`, `xref:` / anchors, blocks and roles, admonitions, collapsible blocks.
+
+== Exploring
+
+* Learn the toolchain: the `asciidoctor` CLI, asciidoctor.js, and writing a simple
+  extension.
+* Pick a first build project — likely the AsciiDoc formatter idea in
+  `track/oss-contribs.adoc`.
+
+== Tabled
+
+_(none yet)_
+
+== Done
+
+_(none yet)_

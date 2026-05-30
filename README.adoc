@@ -1,0 +1,355 @@
+= Personal Notes — Operating Manual
+:toc: macro
+:toclevels: 3
+:icons: font
+
+This repository is a personal notes system. It is designed to be fast to reference,
+pleasant to author in AsciiDoc, and easy for an AI agent to navigate and maintain.
+
+Three documents work together:
+
+[cols="1,3"]
+|===
+| `CONTEXT.md` | The *glossary* — what each term means. Vocabulary only.
+| `docs/adr/` | The *decision records* — _why_ the load-bearing choices were made.
+| `README.adoc` (this file) | The *operating manual* — _how_ to write and revisit notes.
+|===
+
+toc::[]
+
+== Core model: three intents
+
+Every note has exactly one *intent*. Intent is the load-bearing idea of the whole
+system: it decides how a note is written, where it lives, how it is revisited — and
+which evidence applies.
+
+[cols="1,2,2,2",options="header"]
+|===
+| Intent | For | Success metric | Revisit by
+| *Reference* | Looking something up on demand | Findability | Update on use + light agent sweep
+| *Internalise* | Getting something into your head | Retention / production | Spaced retrieval practice
+| *Track* | An actionable backlog | Staying triaged | Periodic triage
+|===
+
+*Capture* is not an intent — it is the transient state of a raw jotting in `inbox/`
+before it is _processed_ into a typed note.
+
+[IMPORTANT]
+====
+The strong memory science — retrieval practice and spacing — governs *Internalise
+notes only*. A Reference note is something you deliberately externalised so you
+would _not_ have to remember it; drilling it with spaced repetition is a category
+error. See `docs/adr/0002-type-notes-by-intent.md`.
+====
+
+== Directory layout
+
+[source]
+----
+notes/
+├── CONTEXT.md              glossary
+├── README.adoc             this manual
+├── docs/adr/               decision records
+├── inbox/                  Capture: raw jottings, zero ceremony
+├── reference/              look-it-up notes
+├── internalise/            production self-test notes
+│   └── .srs/               machine-only: log.jsonl + state.json
+└── track/                  backlogs grouped by status
+----
+
+* *One file per topic.* Split a file only when it stops being scannable at a
+  glance, or it grows two-or-more independently-referenced ideas.
+* *Filenames are subject slugs* — `lowercase-kebab.adoc`. No dates, no timestamp
+  IDs (dates live in metadata and inline, never in filenames).
+* *No deep sub-folders.* Subject is carried by the filename and by `xref:` links,
+  not by a folder tree.
+
+== The note lifecycle
+
+[source]
+----
+jot (inbox/, zero ceremony)  ──process──▶  typed note (reference/ internalise/ track/)
+                                  │
+                                  └─ or discard
+----
+
+When something is worth keeping but you have no time, drop it in `inbox/` raw.
+_Processing_ — selecting, rephrasing, turning an observation into a production
+prompt — happens later, deliberately, not mid-thought.
+
+[NOTE]
+*How* you process is deliberately yours to shape — there is no validated intake
+procedure to enforce (the evidence governs the _note you produce_, not the path
+you take to it). The framework's only hard requirements are the per-intent
+templates and the corpus invariants the agent's _Validate_ operation checks.
+
+== Writing notes
+
+=== Reference notes
+
+Optimised for *findability and fast scanning*, not memory.
+
+.Template
+[source,asciidoc]
+----
+= <Title: name what the note answers>
+:intent: reference
+:created: <YYYY-MM-DD>
+:updated: <YYYY-MM-DD>
+:tags: <comma, separated>
+:source: <url-or-citation>
+
+<BLUF: the answer, in the first line or two.>
+
+== <Section — one idea>
+<Detail, in your own words.>
+----
+
+Rules:
+
+* *Title names what it answers* — it is the strongest scent cue.
+* *Bottom line up front (BLUF).* The answer first; context after.
+* *Hierarchy, one idea per section.* Organised material scans (and recalls) better.
+* *Your own words*, not verbatim capture. Selection and transformation are the value.
+* *Always record `:source:`* for provenance and verifiability.
+* *Exclude only what you would regenerate faster than you would find it here*,
+  and that carries no selection, distillation, or provenance value. Curation and
+  a tracked `:source:` _are_ the value — keep a note for those even when the raw
+  facts are a web search away. ("Lookup-able" is about transformation value to
+  you, not about whether the fact exists online — see `CONTEXT.md`.)
+
+[NOTE]
+Grooming a Reference note is _not_ studying — it will not imprint the content. If
+you want it in your head, make an Internalise note instead.
+
+*Revisit:* update a Reference note when you next use it (just-in-time). A low-cadence
+agent hygiene sweep handles dead links, duplicates, and staleness. Notes that rot
+quickly may set `:review_by: <YYYY-MM-DD>` so the sweep surfaces them; evergreen
+notes omit it and never nag.
+
+=== Internalise notes
+
+Optimised for *durable retention and production*. An Internalise note is a
+*production self-test*, never a summary.
+
+.Template — one collapsible item per prompt
+[source,asciidoc]
+----
+= <Title: the subject>
+:intent: internalise
+:created: <YYYY-MM-DD>
+:updated: <YYYY-MM-DD>
+:tags: <comma, separated>
+
+[#<item-id>%collapsible]
+.<Prompt: the situation/meaning that should make you produce the target>
+====
+<Response: the exact form you want to produce, hidden until you expand.>
+====
+----
+
+Rules:
+
+* *Prompt → hidden response.* Attempt to _produce_ the response before revealing it.
+* *Demand production, not recognition* — practise the operation you actually want
+  (transfer-appropriate processing). "Does this look right?" trains the wrong thing.
+  For a *phrasing or editing fix specifically*, cue the _situation or meaning_ and
+  produce the wording cold; showing the flawed text first trains editing, not the
+  live production you want.
+* *Generate, don't re-read* — the value is in producing the answer yourself.
+* *Capture raw first, process later.* Jot the observation in `inbox/`; turn it into a
+  prompt when you process it.
+* Each item carries a stable `[#item-id]` so the scheduler can track it.
+
+*Revisit:* spaced retrieval practice, run by the agent — see
+<<internalise-revision>>.
+
+=== Track notes
+
+An actionable backlog. Items live under *status* sub-headings.
+
+.Template
+[source,asciidoc]
+----
+= <Title: the backlog>
+:intent: track
+:created: <YYYY-MM-DD>
+:updated: <YYYY-MM-DD>
+:tags: <comma, separated>
+
+== Active
+* <item you are working on now>
+
+== Exploring
+* <item under consideration>
+
+== Tabled
+* <item parked for later>
+
+== Done
+* <completed/dropped item>
+----
+
+*Revisit:* triage periodically (the agent presents the backlog by status and asks
+"what changed?"). Promote, demote, and prune.
+
+== Metadata
+
+Two tiers, split by churn and audience: *stable + human-meaningful* in the file;
+*volatile + machine-only* in a sidecar.
+
+=== In-file attributes
+
+[cols="1,1,1,3",options="header"]
+|===
+| Attribute | Required | Applies to | Meaning
+| `:intent:` | recommended | all | reference \| internalise \| track (folder is source of truth; sweep checks agreement)
+| `:created:` | yes | all | ISO-8601 creation date
+| `:updated:` | yes | all | ISO-8601 last substantive edit
+| `:tags:` | optional | all | comma-separated, light secondary axis
+| `:source:` | yes | reference | provenance URL or citation
+| `:review_by:` | optional | reference | decay horizon; sweep surfaces it when due
+|===
+
+=== The `.srs/` sidecar (Internalise)
+
+Machine-managed; never edited by hand.
+
+`internalise/.srs/log.jsonl` — append-only, one JSON object per review:
+
+[source,json]
+----
+{"item": "english#need-action", "date": "2026-05-30", "grade": "good"}
+----
+
+`grade` is one of the lowercase constants `again | hard | good | easy` — stored
+lowercase so the log stays clean to parse and replay (the capitalised forms in the
+tables below are display labels for the same constants).
+
+`internalise/.srs/state.json` — derived (recomputable from the log *plus the set
+of item ids declared in the `.adoc` files*), one entry per item:
+
+[source,json]
+----
+{"english#need-action": {"level": 2, "next_due": "2026-06-02", "reps": 3}}
+----
+
+The log is the durable asset; state and schedule are a function of it (see
+`docs/adr/0004-internalise-graded-log-leitner.md`).
+
+[#srs-new-item]
+*New items.* A freshly created item has no log entries yet still needs a state
+entry (see _Validate_). It enters at *level 1, `reps` 0*, with `next_due` =
+creation date + the level-1 interval (1 day) — and is *not* written to
+`log.jsonl` until its first graded review. This is the same uniform rule used
+everywhere: `next_due` = anchor + interval[`level`], where the anchor is the
+creation date for a new item and the last review date thereafter. `reps` 0 is
+what marks an item as never-reviewed.
+
+== Linking
+
+* Use native `xref:` / `<<anchor>>` with *descriptive link text* (the label is a
+  scent cue) — never "see here".
+* Link *sparingly and purposefully* — only where you would actually jump.
+* *Never hand-maintain backlinks.* The agent derives them by searching the corpus.
+* `:tags:` are a light secondary axis, not a primary structure.
+
+A subject's notes may link *across* intents — e.g. an Internalise English note may
+`xref:` a Reference grammar note.
+
+[#internalise-revision]
+== Internalise revision: the Leitner schedule
+
+Attempt to produce the response, reveal, then self-grade. The agent records the
+grade in the log and reschedules.
+
+.Interval ladder (the gap before an item is next due)
+[cols="2,1,1,1,1,1,1",options="header"]
+|===
+| Level | 1 | 2 | 3 | 4 | 5 | 6
+| Interval | 1 day | 3 days | 1 week | 3 weeks | 2 months | 6 months
+|===
+
+.Grade → level move
+[cols="1,2,2",options="header"]
+|===
+| Grade | Meaning | Move
+| *Again* | couldn't produce it | reset to level 1 (due tomorrow)
+| *Hard* | produced, but laboured | stay at current level
+| *Good* | clean production | +1 level (interval expands)
+| *Easy* | instant | +2 levels
+|===
+
+A "miss" only craters to level 1 when you genuinely could not produce it; *Hard* is
+the escape valve for "almost". If an item fails ~4+ times, the agent flags it to be
+*rewritten*, not re-drilled — chronic failure usually means a bad prompt.
+
+== Agent operations
+
+The contract an agent follows when maintaining this repo.
+
+Practice (Internalise)::
+Read `internalise/.srs/state.json`; for each item with `next_due <= today`, show its
+prompt, take the produced answer, compare to the response, ask for / infer a grade,
+append to `log.jsonl`, and update `state.json` per the ladder above.
+
+Hygiene sweep (Reference)::
+Check for dead links, near-duplicate notes, and contradictions; list notes whose
+`:review_by:` is past or whose `:updated:` is old; report — do not auto-edit.
+
+Triage (Track)::
+Present each Track note's items grouped by status; ask what changed; move, promote,
+demote, and prune on instruction.
+
+Backlinks::
+On request, find references to a note by searching the corpus for its filename and
+anchors. Do not store them.
+
+Validate::
+Check that each note's `:intent:` matches its folder, that Reference notes have a
+`:source:`, that `xref:` targets resolve, and that every Internalise item id in a
+`.adoc` has a `state.json` entry (and vice-versa) — a newly created item being
+registered per the <<srs-new-item,new-item rule>>.
+
+== Evidence basis
+
+Tiered honestly. Full reasoning and citations live in the ADRs.
+
+[cols="2,3,1",options="header"]
+|===
+| Area | Basis | Tier
+| Internalise: retrieval practice + spacing | Roediger & Karpicke 2006; Cepeda et al. 2006/2008; Dunlosky et al. 2013; Adesope et al. 2017 | *Strong* (experimental, meta-analytic)
+| Internalise: production form | Generation effect (Slamecka & Graf 1978); transfer-appropriate processing (Morris et al. 1977) | Strong
+| Reference: scanning + findability | Hierarchy & recall (Bower et al. 1969); information scent (Pirolli & Card 1999); PIM navigation (Bergman et al. 2008/2013) | Moderate
+| Granularity / Zettelkasten rejection | No controlled evidence for Zettelkasten; PIM navigation studies | Weak / practitioner
+| Track maintenance | GTD; "digital gardening" | None (practitioner convention)
+|===
+
+[NOTE]
+Note-_making_ is not studying (summarising and highlighting are low-utility study
+acts — Dunlosky et al. 2013). Reference notes earn their keep as external storage;
+learning happens in Internalise notes, through retrieval practice.
+
+== License
+
+This repository is https://reuse.software/[REUSE]-compliant. Per-file copyright
+and licensing is declared in `REUSE.toml`, with the full license texts in
+`LICENSES/`. Run `reuse lint` to verify. It is licensed in two parts (see
+`docs/adr/0005-split-license-apache-and-cc0.md` for the reasoning).
+
+[cols="1,1,2",options="header"]
+|===
+| Scope | License | What it covers
+| *The framework* | link:LICENSES/Apache-2.0.txt[Apache-2.0]
+| The methodology and everything that teaches it: `README.adoc`, `CONTEXT.md`,
+  `docs/adr/`, `docs/origin-brief.md`, `NOTICE`, and the conventions, templates,
+  and metadata schema described above.
+| *The example notes* | link:LICENSES/CC0-1.0.txt[CC0 1.0]
+| The sample note content shipped to illustrate the method: everything under
+  `reference/`, `internalise/`, and `track/` (including the `.srs/` log and
+  state). Dedicated to the public domain — copy a sample as a seed with no
+  obligation.
+|===
+
+The example notes are *illustrative samples of the method, not maintained content
+to adopt verbatim* — fork the framework and write your own.

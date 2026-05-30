@@ -1,0 +1,31 @@
+= English writing pitfalls
+:intent: reference
+:created: 2026-05-30
+:updated: 2026-05-30
+:tags: english, writing, style
+:source: https://digital.gov/guides/plain-language/writing (Federal Plain Language Guidelines, "avoid hidden verbs"); Helen Sword, "Zombie Nouns" (TED-Ed / NYT); Bryan Garner, _Garner's Modern English Usage_ (buried verbs)
+
+A growing cheatsheet of recurring weak spots in my writing, with the fix for
+each. Look-it-up while editing; not a study aid (to drill a fix into production,
+make an Internalise item — see `internalise/english.adoc`).
+
+[#buried-verbs]
+== Buried verbs (zombie nouns)
+
+A phrase that stacks abstract nouns ending in `-tion`, `-sion`, `-ment`, `-ance`
+reads flat and hides who does what. Each such noun is usually a verb in
+disguise: *decision* ← decide, *action* ← act, *analysis* ← analyse.
+
+*Fix:* recover the buried verb and name who acts.
+
+[cols="1,1",options="header"]
+|===
+| Flat (noun-heavy) | Direct (verb recovered)
+| "what decisions need action" | "decide what to do" / "decide which to act on"
+| "we conduct an analysis of the data" | "we analyse the data"
+| "make a decision" | "decide"
+| "take action on" | "act on"
+|===
+
+Drilled as a production self-test in
+xref:../internalise/english.adoc#need-action[the "decide which to act on" item].
