@@ -67,8 +67,10 @@ _Avoid_: "split", "derive", "decompose".
 
 **Prompt / Response**:
 The two halves of an Internalise item: the _prompt_ states a situation or cue;
-the _response_ is the exact form you want to produce unaided. The response stays
-hidden until you have attempted it.
+the _response_ is the form you want to produce unaided — a single canonical
+answer for a fact-like item, or a worked _exemplar_ for a skill item, where a
+faithful variant of the same move still counts. The response stays hidden until
+you have attempted it.
 _Avoid_: "front/back" (Anki term), "flashcard".
 
 **Grade**:

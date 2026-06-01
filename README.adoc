@@ -154,7 +154,8 @@ Optimised for *durable retention and production*. An Internalise note is a
 [#<item-id>%collapsible]
 .<Prompt: the situation/meaning that should make you produce the target>
 ====
-<Response: the exact form you want to produce, hidden until you expand.>
+<Response: the form you want to produce — a single canonical answer, or a
+worked exemplar for a skill item — hidden until you expand.>
 ====
 ----
 
@@ -166,6 +167,13 @@ Rules:
   For a *phrasing or editing fix specifically*, cue the _situation or meaning_ and
   produce the wording cold; showing the flawed text first trains editing, not the
   live production you want.
+* *Cue a determinate, derivable answer.* The prompt must pin the target tightly
+  enough that you can reliably _produce_ it and that reasonable alternatives are
+  clearly wrong — name the meaning and, for a skill, the operation (e.g. "recover
+  the buried verb, name who acts"), but not the words themselves. Too loose and the
+  answer is arbitrary and untestable; too tight and you pattern-match instead of
+  retrieving. When a skill admits faithful variants, show a worked _exemplar_ and
+  grade on whether you applied the operation, not on matching the string.
 * *Generate, don't re-read* — the value is in producing the answer yourself.
 * *Capture raw first, process later.* Jot the observation in `inbox/`; turn it into a
   prompt when you process it.

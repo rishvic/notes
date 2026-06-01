@@ -1,19 +1,26 @@
 = English: phrasing I want to produce unaided
 :intent: internalise
 :created: 2026-05-30
-:updated: 2026-05-30
+:updated: 2026-06-01
 :tags: english, phrasing, concision
 
-Production self-tests for English phrasing. Attempt the response aloud before
-revealing it — the value is in producing it yourself, not recognising it.
+Production self-tests for English phrasing. Attempt your version aloud before
+revealing it — the value is in producing it yourself, not recognising it. Where
+an item drills a transformation, the revealed answer is a worked _exemplar_:
+grade yourself on whether you applied the move, not on matching the wording.
 
 [#need-action%collapsible]
-.You're replying to PR review comments. You've made changes for some findings and justified deferring others, and you want to say what you'll do with the rest. Say it cleanly.
+.PR reply. The reviewer left eight comments; you've pushed fixes for five and explained why one can wait. For the last two, you want to tell the reviewer you'll read through them and work out which ones warrant a change. Write it as one sentence — plain verbs, name who acts, keep it concise.
 ====
-"…to understand the findings and *decide which to act on*."
+Exemplar: "I'll go through the last two and *decide which to act on*."
 
-Why this beats "…figure out what decisions need action": that phrase stacks two
-buried verbs — *decide* (hidden in "decisions") and *act* (hidden in "action") —
-so it reads flat and blurs who does what. The move: recover the verbs and name
-who acts. See xref:../reference/english-writing-pitfalls.adoc#buried-verbs[buried verbs (zombie nouns)].
+*Grade on the transform, not the words.* Good = you recovered both verbs and
+named who acts in a concise active sentence — the framing is free ("Let me read
+through the last two and decide which to act on" passes just as well). A miss is
+the noun-stacked, agentless version: "I'll figure out what decisions need action
+on the last two," which buries *decide* (in "decisions") and *act* (in "action")
+and blurs who does what.
+
+The move: recover the buried verb and name who acts. See
+xref:../reference/english-writing-pitfalls.adoc#buried-verbs[buried verbs (zombie nouns)].
 ====
