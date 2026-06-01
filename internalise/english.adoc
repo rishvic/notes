@@ -24,3 +24,19 @@ and blurs who does what.
 The move: recover the buried verb and name who acts. See
 xref:../reference/english-writing-pitfalls.adoc#buried-verbs[buried verbs (zombie nouns)].
 ====
+
+[#which-vs-what%collapsible]
+.Two messages to a colleague. (a) Three rollback options are already written up and you want them to pick one. (b) The outage's cause is still unknown and you want their theories. For each, produce the interrogative word — "which" or "what" — that fits, then state in one line the rule that decides it.
+====
+Answer: (a) *which* — "Which of the three rollback options do you want?" (b)
+*what* — "What do you think caused the outage?"
+
+Rule: *which* selects from a *closed, known set* (the candidates are already on
+the table); *what* opens onto an *unbounded field*. Test: if you can point at the
+candidates, it's _which_; if the answer ranges over open possibilities, it's
+_what_.
+
+This is a fact-like item: grade on whether you picked the right word for each
+scope and named the closed-set/open-field rule, not on wording. See
+xref:../reference/english-writing-pitfalls.adoc#which-vs-what["which" vs "what"].
+====

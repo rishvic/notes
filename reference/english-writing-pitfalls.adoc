@@ -1,9 +1,9 @@
 = English writing pitfalls
 :intent: reference
 :created: 2026-05-30
-:updated: 2026-05-30
+:updated: 2026-06-01
 :tags: english, writing, style
-:source: https://digital.gov/guides/plain-language/writing (Federal Plain Language Guidelines, "avoid hidden verbs"); Helen Sword, "Zombie Nouns" (TED-Ed / NYT); Bryan Garner, _Garner's Modern English Usage_ (buried verbs)
+:source: https://digital.gov/guides/plain-language/writing (Federal Plain Language Guidelines, "avoid hidden verbs"); Helen Sword, "Zombie Nouns" (TED-Ed / NYT); Bryan Garner, _Garner's Modern English Usage_ (buried verbs); https://proofed.co.uk/writing-tips/word-choice-what-vs-which-questions/ (Proofed, "What vs. Which in Questions")
 
 A growing cheatsheet of recurring weak spots in my writing, with the fix for
 each. Look-it-up while editing; not a study aid (to drill a fix into production,
@@ -29,3 +29,28 @@ disguise: *decision* ← decide, *action* ← act, *analysis* ← analyse.
 
 Drilled as a production self-test in
 xref:../internalise/english.adoc#need-action[the "decide which to act on" item].
+
+[#which-vs-what]
+== "Which" vs "what" (selecting from a set)
+
+The choice turns on the *scope of the options*, not on register: use *which* when
+you are selecting from a *closed, known set* (the candidates are already on the
+table); use *what* when the field is *open or unbounded*.
+
+*Test:* can you point at the candidates? If the set is enumerated or defined →
+*which*. If the answer ranges over open possibilities → *what*.
+
+[cols="1,1",options="header"]
+|===
+| Open field → *what* | Closed set → *which*
+| "What should we do about the outage?" | "Which of the three rollback options do you want?"
+| "What caused this?" (cause not yet known) | "Which commit caused this?" (bisected to a known list)
+| "What hand do you write with?" (reads as open) | "Which hand do you write with?" (only two — left or right)
+|===
+
+In the `need-action` example, "decide *which* to act on" is the precise form
+because the set is closed and named — exactly two findings; "what to act on"
+would loosen it to an open field.
+
+Drilled as a production self-test in
+xref:../internalise/english.adoc#which-vs-what[the "which vs what" item].
