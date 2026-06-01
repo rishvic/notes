@@ -1,4 +1,11 @@
 {
   "english#need-action": { "level": 2, "next_due": "2026-06-04", "reps": 1 },
-  "english#which-vs-what": { "level": 1, "next_due": "2026-06-02", "reps": 0 }
+  "english#which-vs-what": { "level": 1, "next_due": "2026-06-02", "reps": 0 },
+  "tree-sitter-grammar-dsl#core-combinators": { "level": 1, "next_due": "2026-06-02", "reps": 0 },
+  "tree-sitter-grammar-dsl#binary-left-assoc": { "level": 1, "next_due": "2026-06-02", "reps": 0 },
+  "tree-sitter-grammar-dsl#left-vs-right-assoc": { "level": 1, "next_due": "2026-06-02", "reps": 0 },
+  "tree-sitter-grammar-dsl#hidden-rule": { "level": 1, "next_due": "2026-06-02", "reps": 0 },
+  "tree-sitter-grammar-dsl#field-vs-alias": { "level": 1, "next_due": "2026-06-02", "reps": 0 },
+  "tree-sitter-grammar-dsl#token-immediate": { "level": 1, "next_due": "2026-06-02", "reps": 0 },
+  "tree-sitter-grammar-dsl#conflicts-vs-prec": { "level": 1, "next_due": "2026-06-02", "reps": 0 }
 }

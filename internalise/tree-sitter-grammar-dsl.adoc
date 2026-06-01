@@ -1,0 +1,88 @@
+= Tree-sitter grammar DSL: production drills
+:intent: internalise
+:created: 2026-06-01
+:updated: 2026-06-01
+:tags: tree-sitter, parsing, grammars, dsl
+
+Production self-tests for writing Tree-sitter grammars. Produce the DSL (or the
+rule) yourself before revealing it — the value is in writing it cold, not
+recognising it. For the code items the answer is a worked _exemplar_: grade on
+whether you applied the right construct, not on byte-for-byte wording. The
+look-it-up companion is
+xref:../reference/tree-sitter-grammar-dsl.adoc[the Tree-sitter cheatsheet].
+
+[#core-combinators%collapsible]
+.Name the DSL function for each EBNF operation: concatenation (a then b), alternation (a or b), zero-or-more, one-or-more, and zero-or-one.
+====
+`seq(a, b)`, `choice(a, b)`, `repeat(rule)`, `repeat1(rule)`, `optional(rule)`.
+
+Fact-like item: grade on getting all five names right. Note `repeat` is *zero* or
+more — reach for `repeat1` when at least one occurrence is required.
+====
+
+[#binary-left-assoc%collapsible]
+.You have an `$.expression` rule and want to add binary subtraction (`expr - expr`) that parses `a - b - c` as `(a - b) - c`. Write the rule body and say which precedence wrapper makes the grouping come out right.
+====
+Exemplar: `prec.left(1, seq($.expression, '-', $.expression))`.
+
+Grade on the move: you wrapped the `seq` in `prec.left` (left-associative →
+groups from the left). The bare `seq($.expression, '-', $.expression)` is
+ambiguous and `generate` would reject it as an unresolved conflict; `prec.right`
+would give the wrong `a - (b - c)`.
+====
+
+[#left-vs-right-assoc%collapsible]
+.In one line each: when do you choose `prec.left` over `prec.right`, and what does "left-associative" mean in terms of which match Tree-sitter prefers?
+====
+Choose `prec.left` when equal-precedence operators should group *from the left*
+(`a-b-c` → `(a-b)-c`) — the common case for `+ - * /`; `prec.right` for
+right-grouping operators (assignment `=`, exponent `**`).
+
+"Left-associative" = on a conflict between equal precedences, prefer the rule
+that *ends earlier* (reduce sooner), which closes the left-hand grouping first.
+====
+
+[#hidden-rule%collapsible]
+.You want a helper rule `statement` that groups alternatives but should NOT appear as its own named node in the syntax tree — its children should fold into the parent. What do you do to its name, and what is the effect?
+====
+Prefix the rule name with an underscore: `_statement`. A *hidden rule* is inlined
+into its parent — the node never shows up in the tree, its content does.
+
+Fact-like: grade on naming the underscore convention and the "inlined into
+parent" effect. Contrast `inline` (a top-level field that removes a rule
+everywhere) and `supertypes` (hidden but still recorded as an abstract category).
+====
+
+[#field-vs-alias%collapsible]
+.Distinguish `field('left', $.expr)` from `alias($.expr, 'operand')`: what does each change about the syntax tree?
+====
+`field(name, rule)` tags a child with a *field name* so code can fetch it by name
+(`node.childForFieldName('left')`) — the tree shape and the node's own type are
+unchanged. `alias(rule, name)` *renames the node itself* in the tree.
+
+Grade on the distinction: field = a named handle on a child (structure same);
+alias = the node reports a different type.
+====
+
+[#token-immediate%collapsible]
+.A function call `foo()` should only parse when there is no space before the `(`, but `foo ()` should not. Which DSL function expresses "no whitespace may precede this token", and how does it differ from plain `token(...)`?
+====
+`token.immediate('(')` — matches only when no whitespace/extras precede it.
+
+Plain `token(rule)` collapses a (possibly complex) rule into a single leaf token
+at the lexer level but still allows the normal leading `extras`;
+`token.immediate` additionally forbids that leading whitespace.
+====
+
+[#conflicts-vs-prec%collapsible]
+.Your grammar has a genuine ambiguity you want the parser to keep both interpretations of and resolve with GLR at runtime — not pick a winner at generation time. Which mechanism do you use, and how does it differ from `prec`?
+====
+Declare the rule pair in the top-level `conflicts` field (an array of arrays of
+rule names). `prec` resolves a conflict *statically* at parser-generation time by
+choosing the higher-precedence rule; `conflicts` tells Tree-sitter the ambiguity
+is *intentional*, so the GLR parser explores both branches and resolves at parse
+time (optionally guided by `prec.dynamic`).
+
+Grade on naming `conflicts` and the static (generation) vs dynamic (GLR runtime)
+distinction.
+====

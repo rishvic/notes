@@ -1,0 +1,51 @@
+= Learn Tree-sitter deeply
+:intent: track
+:created: 2026-06-01
+:updated: 2026-06-01
+:tags: tree-sitter, parsing, grammars, learning
+//
+// 2026-06-01: spawned reference/ and internalise/ tree-sitter-grammar-dsl notes.
+
+Goal: get genuinely fluent with Tree-sitter — both ends of it. (1) Be able to
+*write grammars as an innate skill*: express a CFG in the grammar DSL without
+reaching for references. (2) Know the *project and tooling* well enough to
+*converse fluently with maintainers* and other deep users. Tracked as a Track
+note because it is an actionable intention; as it progresses it will *spawn*
+Internalise notes (drilling the grammar DSL until grammar-writing is automatic)
+and Reference notes (CLI / query cheatsheets).
+
+First spawned notes (from the official docs):
+xref:../reference/tree-sitter-grammar-dsl.adoc[the grammar DSL & CLI cheatsheet]
+(Reference) and
+xref:../internalise/tree-sitter-grammar-dsl.adoc[the grammar DSL production drills]
+(Internalise).
+
+== Active
+
+* Work through the official _Creating Parsers_ guide
+  (https://tree-sitter.github.io/tree-sitter/creating-parsers[tree-sitter.github.io])
+  to learn the grammar DSL hands-on.
+* Write grammars for a small, self-chosen CFG to internalise the core
+  combinators — `seq`, `choice`, `repeat`, `optional`, named vs. anonymous
+  rules — and how to resolve ambiguity with `prec`, `prec.left/right`, and
+  conflict declarations.
+
+== Exploring
+
+* Map the tooling surface: the `tree-sitter` CLI (`generate`, `parse`, `test`,
+  `highlight`), corpus tests, the S-expression query language (`.scm`) for
+  highlighting/injections/locals, and the WASM / language bindings.
+* Build the project-level knowledge needed to converse with maintainers:
+  how the GLR-based incremental parsing works, external scanners, the
+  `node-types.json` / ABI story, and the project's history and conventions.
+
+== Tabled
+
+_(none yet)_
+
+== Done
+
+_(none yet)_
+
+// A concrete first build target may come from the "Use Tree-sitter for parsing?"
+// question on the AsciiDoc formatter idea in track/oss-contribs.adoc.

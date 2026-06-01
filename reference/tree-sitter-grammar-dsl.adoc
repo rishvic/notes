@@ -1,0 +1,115 @@
+= Tree-sitter grammar DSL & CLI cheatsheet
+:intent: reference
+:created: 2026-06-01
+:updated: 2026-06-01
+:tags: tree-sitter, parsing, grammars, dsl, cli
+:source: https://tree-sitter.github.io/tree-sitter/creating-parsers/2-the-grammar-dsl.html (The Grammar DSL); https://tree-sitter.github.io/tree-sitter/cli/ (Command Line Interface)
+
+A `grammar.js` defines a parser by calling `grammar({...})`. Rules are built from
+a small set of *combinator functions*; `$.rule_name` references another rule, a
+`'literal'` string or `/regex/` is a terminal. This is the look-it-up cheatsheet;
+to drill the DSL into production, see
+xref:../internalise/tree-sitter-grammar-dsl.adoc[the Tree-sitter Internalise drills].
+The wider learning goal lives in xref:../track/learn-treesitter.adoc[the Learn
+Tree-sitter Track note].
+
+== Skeleton
+
+[source,js]
+----
+module.exports = grammar({
+  name: 'mylang',
+  extras: $ => [/\s/, $.comment],
+  word: $ => $.identifier,
+  rules: {
+    source_file: $ => repeat($._statement),
+    _statement:  $ => choice($.assignment, $.expression),
+    // ...
+  }
+});
+----
+
+== Combinators
+
+[cols="1,3",options="header"]
+|===
+| Function | Matches
+| `seq(a, b, …)` | the rules in order (EBNF concatenation)
+| `choice(a, b, …)` | exactly one alternative (EBNF `\|`); argument order is irrelevant
+| `repeat(rule)` | zero or more (EBNF `{x}`)
+| `repeat1(rule)` | one or more
+| `optional(rule)` | zero or one (EBNF `[x]`)
+| `'string'` | an exact terminal token
+| `/regex/` | a terminal matched by Rust-regex syntax
+| `$.name` | a reference to another rule
+|===
+
+== Precedence & associativity
+
+Used to resolve *LR(1) conflicts at generation time* — higher precedence binds
+tighter. Associativity decides how equal-precedence operators chain.
+
+[cols="1,3",options="header"]
+|===
+| Function | Effect
+| `prec(n, rule)` | static numeric precedence; the higher-precedence rule wins a conflict
+| `prec.left([n], rule)` | left-associative — prefer the rule that *ends earlier* (`a-b-c` → `(a-b)-c`)
+| `prec.right([n], rule)` | right-associative — prefer the rule that ends later (`a-b-c` → `a-(b-c)`)
+| `prec.dynamic(n, rule)` | precedence applied *at parse time*, for genuine ambiguities the GLR parser explores
+|===
+
+When a conflict is *intentional* (you want the GLR parser to keep both
+interpretations live), declare it in the top-level `conflicts` field instead of
+forcing a winner with `prec`.
+
+== Tokens
+
+[cols="1,3",options="header"]
+|===
+| Function | Effect
+| `token(rule)` | collapse a complex rule into a single leaf token (lexer-level); accepts only terminal-producing rules
+| `token.immediate(rule)` | match the token only when *no whitespace/extras precede it* (e.g. `foo()` vs `foo ()`)
+|===
+
+== Naming the tree
+
+[cols="1,3",options="header"]
+|===
+| Function | Effect
+| `field('name', rule)` | tag a child with a field name for `node.childForFieldName(...)`; tree shape is unchanged
+| `alias(rule, name)` | rename the *node itself* in the tree; `name` may be a string (anonymous) or `$.sym` (named)
+| `_rule_name` (underscore prefix) | a *hidden rule* — its content is inlined into the parent rather than appearing as its own named node
+|===
+
+== Top-level grammar fields
+
+[cols="1,3",options="header"]
+|===
+| Field | Purpose
+| `name` | the grammar/language identifier (required)
+| `rules` | map of rule name → definition (required)
+| `extras` | tokens allowed *between* any others without being written into each rule — whitespace, comments (defaults to whitespace; `[]` disables)
+| `word` | the identifier token, enabling keyword extraction so reserved words lex correctly
+| `conflicts` | arrays of rule names whose LR(1) conflict is intentional — handled by GLR at runtime
+| `externals` | token names produced by an external C scanner (`scanner.c`) for things regex can't express
+| `inline` | rules to inline away (removed as nodes, expanded at each use site)
+| `supertypes` | abstract category rules (e.g. `_expression`); hidden but recorded in `node-types.json`
+| `precedences` | named precedence levels, listed high→low, referenced by name instead of numbers
+|===
+
+== CLI subcommands
+
+[cols="1,3",options="header"]
+|===
+| Command | Does
+| `tree-sitter init` | scaffold a new parser repo (writes `tree-sitter.json`, bindings)
+| `tree-sitter generate` | compile `grammar.js` → C parser + `node-types.json`
+| `tree-sitter parse <file>` | parse a file and print the syntax tree (`-d` debug, `--stat`)
+| `tree-sitter test` | run the corpus tests in `test/corpus/`
+| `tree-sitter query <q> <file>` | run an `.scm` query against source and print matches
+| `tree-sitter highlight <file>` | render syntax highlighting via the highlight queries
+| `tree-sitter tags <file>` | extract code-nav symbols (definitions/references) via tags queries
+| `tree-sitter playground` | open the browser playground for interactive parsing (needs a WASM build)
+| `tree-sitter build` | build a shared library / WASM from the generated parser
+| `tree-sitter init-config` | create the personal `~/.config/tree-sitter/config.json`
+|===
