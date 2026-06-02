@@ -43,4 +43,5 @@ tags
 
 # End of https://www.toptal.com/developers/gitignore/api/vim,visualstudiocode
 
-!.srs/  # the `.srs` sidecar
+# the `.srs` sidecar
+!.srs/
